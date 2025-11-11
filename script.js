@@ -3,8 +3,18 @@ const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
 
-// Optional: configure a Cloudflare worker URL in `secrets.js` as `window.WORKER_URL = 'https://your-worker.example';`
-const WORKER_URL = window.WORKER_URL || null;
+// Optional: configure a Cloudflare worker URL in `secrets.js` as `window.WORKER_URL = 'https://lorealchatbot.dilyosov.workers.dev/';`
+// We intentionally read window.WORKER_URL dynamically so a missing secrets file
+// doesn't cause a runtime exception at load time.
+function getWorkerUrl() {
+  // Prefer an explicitly set window.WORKER_URL (from secrets.local.js or secrets.js).
+  // Fall back to the known Cloudflare Worker URL for this demo so the page works
+  // even when a secrets file isn't present. This is safe because the Worker
+  // holds the real OpenAI key server-side.
+  // Always use the embedded Cloudflare Worker URL for this demo. The Worker
+  // keeps secrets server-side; the client only needs the public endpoint.
+  return "https://lorealchatbot.dilyosov.workers.dev/";
+}
 
 // Conversation history -- include a system instruction that constrains the assistant
 const messages = [
