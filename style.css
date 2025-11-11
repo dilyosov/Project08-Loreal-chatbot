@@ -11,7 +11,27 @@ body {
   color: var(--loreal-ink);
   display: flex;
   justify-content: center;
-  background: var(--loreal-beige);
+  /* Page background: default to the beige color. When an image exists we
+     add the `.has-bg` class to <body> (via a small inline script) which
+     applies the tiled background at original size and a subtle overlay. */
+  background-color: var(--loreal-beige);
+}
+
+/* When a background image is present on disk we apply tiling + overlay
+  via the `.has-bg` class to avoid a 404 when the file is missing. */
+body.has-bg {
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.6),
+      rgba(255, 255, 255, 0.6)
+    ),
+    url("img/image.png");
+  background-repeat: repeat, repeat; /* tile the image to fill the page */
+  background-position: 0 0, 0 0;
+  background-size: auto, auto; /* keep the image at its original dimensions */
+  /* Try to reduce browser smoothing/blur when the image is not scaled */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 .page-wrapper {
@@ -114,9 +134,12 @@ body {
 .bubble .meta {
   display: block;
   font-size: 11px;
-  color: var(--loreal-muted);
+  /* Use a darker, high-contrast color for timestamps to meet accessibility
+     contrast requirements. Keep a slight opacity to avoid overpowering the
+     message body but ensure readability. */
+  color: rgba(17, 17, 17, 0.72);
   margin-top: 6px;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 /* simple fade-in + slight move up animation for new messages */
@@ -169,7 +192,8 @@ body {
 }
 
 .msg.ai .bubble {
-  color: var(--loreal-ink);
+  /* Ensure assistant bubble text is very dark for high contrast on light bg */
+  color: #111111;
   background: #fff;
   padding: 12px 14px;
   border-radius: 18px 18px 18px 6px;

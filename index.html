@@ -13,6 +13,11 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
+    <!-- Small inline SVG favicon to avoid browser requests for /favicon.ico causing a 404 in the console -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23111111'/%3E%3Ctext x='50' y='55' font-size='50' text-anchor='middle' fill='%23ffffff' font-family='Arial,Helvetica,sans-serif'%3EL%3C/text%3E%3C/svg%3E"
+    />
   </head>
 
   <body>
@@ -90,6 +95,20 @@
       // Embedded worker URL used by the client. This targets the demo Worker which
       // holds the OpenAI API key server-side — safe to expose as an endpoint.
       window.WORKER_URL = "https://lorealchatbot.dilyosov.workers.dev/";
+    </script>
+    <script>
+      // Enable the tiled background image (img/image.png) for the demo.
+      // If you don't want the background, remove this line or the image file.
+      try {
+        document.documentElement.classList &&
+          document.documentElement.classList.add("has-bg");
+        // Also add to body for CSS selector consistency
+        document.body &&
+          document.body.classList &&
+          document.body.classList.add("has-bg");
+      } catch (e) {
+        /* ignore */
+      }
     </script>
     <script src="script.js"></script>
   </body>
