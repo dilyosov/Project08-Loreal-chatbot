@@ -133,7 +133,7 @@ function renderMessage(role, text, timeISO = null) {
     avatarEl.appendChild(img);
   } else {
     // no emoji for user; keep the avatar element as an empty circle
-    avatarEl.textContent = "";
+    avatarEl.textContent = "You";
   }
 
   const el = document.createElement("div");
@@ -151,7 +151,7 @@ function renderAssistantMessage(text) {
 }
 
 function renderUserMessage(text) {
-  return renderMessage("user", `You: ${text}`);
+  return renderMessage("user", ` ${text}`);
 }
 
 /**
