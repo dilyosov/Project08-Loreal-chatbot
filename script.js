@@ -283,6 +283,7 @@ if (clearConvBtn) {
  */
 async function sendToApi(messagesArray) {
   // Prefer the worker endpoint (keeps API keys on the server/worker)
+  const WORKER_URL = getWorkerUrl();
   if (WORKER_URL) {
     const resp = await fetch(WORKER_URL, {
       method: "POST",
@@ -325,6 +326,10 @@ async function sendToApi(messagesArray) {
     return resp.json();
   }
 
+  // If neither worker nor local key is configured, throw but calling code may
+  // prefer to handle this condition more gracefully. We leave a clear error
+  // message for debugging, but the submit handler below will avoid calling
+  // sendToApi when configuration is missing so this path is rarely hit.
   throw new Error(
     "No WORKER_URL or OPENAI_API_KEY configured. Set window.WORKER_URL (recommended) or window.OPENAI_API_KEY for local testing."
   );
@@ -399,6 +404,20 @@ chatForm.addEventListener("submit", async (e) => {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 
   try {
+    // Prevent an API call when neither a worker nor a local API key is configured.
+    if (!getWorkerUrl() && !window.OPENAI_API_KEY) {
+      loadingEl.remove();
+      const cfgMsg =
+        "This demo is not configured to talk to the API. For production, set up a Cloudflare Worker and add the worker URL to a gitignored `secrets.local.js` (example: `window.WORKER_URL = 'https://your-worker.example.workers.dev'`).\n\nFor local testing only, you can create `secrets.local.js` with `window.OPENAI_API_KEY = 'sk-...';` (not recommended to commit).";
+      renderAssistantMessage(cfgMsg);
+      messages.push({
+        role: "assistant",
+        content: cfgMsg,
+        time: new Date().toISOString(),
+      });
+      saveConversation();
+      return;
+    }
     const data = await sendToApi(messages);
 
     // Remove loading placeholder

@@ -85,8 +85,12 @@
       </footer>
     </div>
 
-    <!-- secrets.js can be removed when using Cloudflare Workers for API requests -->
-    <script src="secrets.js"></script>
+    <!-- Use the embedded Cloudflare Worker URL for the demo. -->
+    <script>
+      // Embedded worker URL used by the client. This targets the demo Worker which
+      // holds the OpenAI API key server-side — safe to expose as an endpoint.
+      window.WORKER_URL = "https://lorealchatbot.dilyosov.workers.dev/";
+    </script>
     <script src="script.js"></script>
   </body>
 </html>
